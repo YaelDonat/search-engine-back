@@ -4,6 +4,13 @@ import { AppService } from './app.service';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
 import pino from 'pino';
+import * as fs from 'fs';
+
+const logDirectory = './logs'; 
+
+if (!fs.existsSync(logDirectory)) {
+  fs.mkdirSync(logDirectory);
+}
 
 @Module({
   imports: [
