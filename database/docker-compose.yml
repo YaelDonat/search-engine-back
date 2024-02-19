@@ -2,7 +2,13 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:latest
+    container_name: research_engine_bdd
+    image: postgres:16.1-alpine
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "admin" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     restart: unless-stopped
     env_file: 
       - docker.env
@@ -12,6 +18,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   pgadmin:
+    container_name: research_engine_pgadmin
     image: dpage/pgadmin4
     restart: unless-stopped
     env_file: 
