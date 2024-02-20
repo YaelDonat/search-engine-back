@@ -29,24 +29,21 @@ async function scrapeBookDetails(url) {
   await browser.close();
 }
 
-async function scrapeTextContent(url) {
+module.exports = {
+  scrapeTextContent: async function(id) { 
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(`https://www.gutenberg.org/cache/epub/${id}/pg${id}.txt`);
       const content = response.data;
 
       const startIndex = content.indexOf("*** START OF THE PROJECT GUTENBERG EBOOK") + "*** START OF THE PROJECT GUTENBERG EBOOK".length;
       const titleEndIndex = content.indexOf("***", startIndex) + 3; 
       const bookStartIndex = content.indexOf("\n", titleEndIndex) + 1; 
       const bookContent = content.substring(bookStartIndex);
-      
-      console.log(bookContent.substring(5000, 15000)); 
+      console.log(bookContent.substring(3000, 4000)); 
+      return bookContent;
     } catch (error) {
       console.error("Erreur lors du téléchargement ou du traitement du texte :", error);
     }
   }
 
-const testUrl = 'https://www.gutenberg.org/ebooks/398';
-scrapeBookDetails(testUrl);
-
-const txtUrl = 'https://www.gutenberg.org/cache/epub/398/pg398.txt';
-scrapeTextContent(txtUrl);
+  }
