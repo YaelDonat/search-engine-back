@@ -11,7 +11,8 @@ async function addBooks(id) {
             data: {
                 title: bookData.title,
                 author: bookData.authors[0].name,
-                bookid: bookData.id.toString(),}
+                bookid: bookData.id.toString(),
+                imgUrl: bookData.formats['image/jpeg'],}
             });
         console.log(`Livre ${bookData.title} ajouté avec succès !`);
     }

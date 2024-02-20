@@ -13,5 +13,6 @@ model Livre {
   id      Int    @id @default(autoincrement())
   title   String
   author  String
-  txtUrl  String
+  bookid  String
+  imgUrl  String
 }
