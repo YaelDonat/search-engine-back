@@ -18,7 +18,7 @@ async function addBooks(id) {
 
         if (existingBook) {
             console.log(`Le livre ${bookData.title} existe déjà dans la base de données.`);
-            return; 
+            return null; 
         }
         await prisma.livre.create({
             data: {

@@ -20,7 +20,7 @@ model Livre {
 
 model Mot {
   id             Int    @id @default(autoincrement())
-  mot            String
+  mot            String 
   nbOccurrences  Int
   livreId        Int
   livre          Livre  @relation(fields: [livreId], references: [id]) // Clé étrangère

@@ -2,45 +2,63 @@ const axios = require('axios');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function scrapeTextContent(id) { 
-    try {
-      const response = await axios.get(`https://www.gutenberg.org/cache/epub/${id}/pg${id}.txt`);
-      const content = response.data;
+async function scrapeAndIndexBook(bookid) {
+  try {
+    // Scrape content
+    const content = await scrapeTextContent(bookid);
+    // Directly tokenize and index
+    const index = tokenizeAndIndex(content);
+    // Save to DB in batch
+    await saveIndexToDatabaseBatch(index, bookid);
+    console.log(`Indexation et sauvegarde du livre ${bookid} terminées.`);
+  } catch (error) {
+    console.error("Erreur lors de l'indexation et de la sauvegarde :", error);
+  }
+}
 
-      const startIndex = content.indexOf("*** START OF THE PROJECT GUTENBERG EBOOK") + "*** START OF THE PROJECT GUTENBERG EBOOK".length;
-      const titleEndIndex = content.indexOf("***", startIndex) + 3; 
-      const bookStartIndex = content.indexOf("\n", titleEndIndex) + 1; 
-      const bookContent = content.substring(bookStartIndex);
-      
-      return bookContent;
-    } catch (error) {
-      console.error("Erreur lors du téléchargement ou du traitement du texte :", error);
-    }
+async function scrapeTextContent(id) { 
+  try {
+    const response = await axios.get(`https://www.gutenberg.org/cache/epub/${id}/pg${id}.txt`);
+    const content = response.data;
+
+    const startIndex = content.indexOf("*** START OF THE PROJECT GUTENBERG EBOOK") + "*** START OF THE PROJECT GUTENBERG EBOOK".length;
+    const titleEndIndex = content.indexOf("***", startIndex) + 3; 
+    const bookStartIndex = content.indexOf("\n", titleEndIndex) + 1; 
+    const bookContent = content.substring(bookStartIndex);
+    
+    return bookContent;
+  } catch (error) {
+    console.error("Erreur lors du téléchargement ou du traitement du texte :", error);
+  }
+}
+
+function tokenizeAndIndex(text) {
+  const words = text.toLowerCase().split(/\W+/);
+  const index = {};
+  words.forEach(word => {
+    if (word) index[word] = (index[word] || 0) + 1;
+  });
+  return index;
+}
+
+async function saveIndexToDatabaseBatch(index, bookid) {
+  const livreId = await findLivreIdByBookid(bookid);
+  if (!livreId) {
+    console.error("Livre non trouvé pour bookid:", bookid);
+    return;
   }
 
-  async function tokenize(text){
-   
-    let words = text.split(/\W+/)
-        .filter(token => token)
-        .map(token => token.toLowerCase()); 
+  const data = Object.entries(index).map(([mot, nbOccurrences]) => ({
+    mot,
+    nbOccurrences,
+    livreId,
+  }));
 
-    return words
-}
-tokenize("Hello, world! This is a test. test hello")
-async function indexage(id){
-    let chaine = await scrapeTextContent(id); // Supposons que cela récupère une chaîne de texte
-    let words = await tokenize(chaine); // Supposons que cela divise la chaîne en mots
-    let index = {};
-    for(let i = 0; i < words.length; i++){
-        
-        let word = words[i];
-        if(index[word]){
-            index[word]++;
-        } else {
-            index[word] = 1;
-        }
-    }
-    return index;
+
+  await prisma.mot.createMany({
+    data,
+    skipDuplicates: true,
+  });
 }
 
 
@@ -53,39 +71,5 @@ async function findLivreIdByBookid(bookid) {
   return livre ? livre.id : null;
 }
 
-async function saveIndexToDatabase(index, bookid) {
-    const livreId = await findLivreIdByBookid(bookid);
-    if (!livreId) {
-      console.error("Livre non trouvé pour bookid:", bookid);
-      return;
-    }
-  
-    for (const [mot, nbOccurrences] of Object.entries(index)) {
-      const existingEntry = await prisma.mot.findFirst({
-        where: {
-          mot: mot,
-          livreId: livreId,
-        },
-      });
-      if (!existingEntry) {
-        await prisma.mot.create({
-          data: {
-            mot: mot,
-            nbOccurrences: nbOccurrences,
-            livreId: livreId,
-          },
-        });
-      }
-    }
-  }
-  
 
-async function indexAndSaveBook(bookid) {
-    
-    const index = await indexage(bookid); 
-    await saveIndexToDatabase(index, bookid);
-    console.log(`Indexation et sauvegarde du livre ${bookid} terminées.`);
-  }
-
-
-module.exports = indexAndSaveBook;
+module.exports = scrapeAndIndexBook;
