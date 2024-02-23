@@ -41,4 +41,5 @@ async function main() {
     }
     console.log("books added successfully!")
 }
-main()
+
+module.exports = addBooks;

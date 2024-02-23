@@ -84,6 +84,8 @@ async function indexAndSaveBook(bookid) {
     
     const index = await indexage(bookid); 
     await saveIndexToDatabase(index, bookid);
+    console.log(`Indexation et sauvegarde du livre ${bookid} terminées.`);
   }
 
-indexAndSaveBook(369)
+
+module.exports = indexAndSaveBook;
