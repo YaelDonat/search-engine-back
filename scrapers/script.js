@@ -13,4 +13,5 @@ async function main(debut, fin) {
     
     console.log("books added and indexed successfully")
 }
-main(56667, 56668)
+main(350, 361)
+main(56667)

@@ -27,10 +27,22 @@
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
+## Initialisation du Projet
 
+Pour initialiser le projet sur un nouveau système, suivez ces étapes :
+
+1. Clonez le dépôt sur votre machine.
+2. Installer les packages :
 ```bash
 $ npm install
 ```
+3. Exécutez le script d'initialisation :
+```bash 
+- Sur Unix/Linux/MacOS : `bash/init-project.sh`
+
+- Sur Windows : `bash\init-project.bat`
+```
+
 
 ## Running the app
 
