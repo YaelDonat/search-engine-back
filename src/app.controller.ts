@@ -1,5 +1,7 @@
 import { Controller, Get, Query, Logger, Post } from '@nestjs/common';
 import { AppService } from './app.service';
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 @Controller()
 export class AppController {
@@ -12,20 +14,26 @@ export class AppController {
   }
   
   @Post('search')
-  async search(@Query('keyword') keyword: string) : Promise<any> {
-    
-    const books = await this.appService.getAllBooks();
-    const matchingBooks: string[] = [];
-    const booktable = {};
-    for (const book of books) {
-      const textContent = await this.appService.scrapeTextContent(book.bookid);
-      const regex = new RegExp('\\b' + keyword + '\\b', 'i');
-      if (regex.test(textContent)) {
-        matchingBooks.push(book.title);
-    }
-  }
-    return matchingBooks;
-
+async search(@Query('keyword') keyword: string): Promise<any> {
   
+  const results = await prisma.mot.findMany({
+    where: {
+      mot: keyword.toLowerCase(), 
+    },
+    include: {
+      livre: true, 
+    },
+    orderBy: {
+      nbOccurrences: 'desc',
+    },
+  });
+
+  const matchingBooks = results.map(result => ({
+    title: result.livre.title,
+    nbOccurrences: result.nbOccurrences,
+  }));
+
+  return matchingBooks;
 }
+
 }
