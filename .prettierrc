@@ -1,4 +1,19 @@
 {
+  "tabWidth": 2,
+  "quoteProps": "as-needed",
   "singleQuote": true,
-  "trailingComma": "all"
+  "printWidth": 120,
+  "semi": true,
+  "useTabs": false,
+  "trailingComma": "none",
+  "overrides": [
+    {
+      "files": "*.js",
+      "options": {
+        "trailingComma": "all"
+      }
+    }
+  ],
+  "arrowParens": "avoid",
+  "endOfLine": "auto"
 }

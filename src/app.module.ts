@@ -3,10 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerModule } from 'nestjs-pino';
 import { ConfigModule } from '@nestjs/config';
+import { ScrapersModule } from './scrapers/scrapers.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { BookModule } from './book/book.module';
+import { WordModule } from './word/word.module';
 import pino from 'pino';
 import * as fs from 'fs';
 
-const logDirectory = './logs'; 
+const logDirectory = './logs';
 
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);
@@ -14,6 +18,7 @@ if (!fs.existsSync(logDirectory)) {
 
 @Module({
   imports: [
+    PrismaModule,
     ConfigModule.forRoot(),
     LoggerModule.forRoot({
       pinoHttp: {
@@ -21,7 +26,7 @@ if (!fs.existsSync(logDirectory)) {
         formatters: {
           level: (label, number) => {
             return { level: label };
-          },
+          }
         },
 
         customReceivedMessage: function (req, res) {
@@ -39,17 +44,18 @@ if (!fs.existsSync(logDirectory)) {
         stream: pino.destination({
           dest: `./logs/${new Date().toLocaleDateString('en-US').replace(/\//g, '-')}.log`,
           minLength: 4096,
-          sync: false,
+          sync: false
         }),
 
-        transport:
-          process.env.NODE_ENV !== 'production'
-            ? { target: 'pino-pretty' }
-            : undefined,
-      },
+        transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined
+      }
     }),
+    ScrapersModule,
+    PrismaModule,
+    WordModule,
+    BookModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
-export class AppModule {}
+export class AppModule { }
