@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 @Controller('app')
 export class AppController {
   private readonly logger = new Logger(AppController.name);
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   getHello(): string {

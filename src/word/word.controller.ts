@@ -7,7 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('word')
 @Controller('word')
 export class WordController {
-  constructor(private readonly wordService: WordService) { }
+  constructor(private readonly wordService: WordService) {}
 
   @Post()
   create(@Body() createWordDto: CreateWordDto) {
