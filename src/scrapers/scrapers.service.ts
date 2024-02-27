@@ -24,7 +24,7 @@ export class ScrapersService {
       }
 
       const bookData = await response.json();
-      this.logger.info(bookData)
+      this.logger.info(bookData);
 
       const existingBook = await this.prisma.livre.findFirst({
         where: {

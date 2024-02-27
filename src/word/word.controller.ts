@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
@@ -13,14 +13,14 @@ export class WordController {
   create(@Body() createWordDto: CreateWordDto) {
     return this.wordService.create(createWordDto);
   }
-
   @Post('search')
-  async search(@Query('keyword') keyword: string) {
+  async search(@Body('keyword') keyword: string) {
     const results = await this.wordService.findAll(keyword);
     const matchingBooks = results.map(result => ({
       title: result.livre.title,
       nbOccurrences: result.nbOccurrences,
       mot: result.mot,
+      author: result.livre.author,
       imgUrl: result.livre.imgUrl
     }));
 

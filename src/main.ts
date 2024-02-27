@@ -8,6 +8,11 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Search Engine API')
     .setDescription('API')
