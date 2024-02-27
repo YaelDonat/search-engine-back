@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ScrapersService } from './scrapers.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -13,7 +13,8 @@ export class ScrapersController {
   }
 
   @Post('addAndIndexBook')
-  async addAndIndexBook(@Param('start') start: number, @Param('end') end: number): Promise<void> {
+  async addAndIndexBook(@Query('start') start: number, @Query('end') end: number): Promise<void> {
+    
     this.scrapersService.addAndIndexBook(start, end);
   }
 }
