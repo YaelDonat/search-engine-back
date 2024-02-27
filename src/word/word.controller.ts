@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('word')
 @Controller('word')
 export class WordController {
   constructor(private readonly wordService: WordService) { }

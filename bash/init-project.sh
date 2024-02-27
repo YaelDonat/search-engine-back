@@ -35,8 +35,4 @@ npx prisma generate
 npx prisma migrate dev
 cd ../..
 
-# Remplir la base de données
-echo "Lancement du script de remplissage de la base de données..."
-node scrapers/script.js
-
 echo "Initialisation terminée."

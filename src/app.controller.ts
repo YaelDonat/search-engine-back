@@ -1,9 +1,11 @@
 import { Controller, Get, Query, Logger, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { PrismaClient } from '@prisma/client';
+import { ApiTags } from '@nestjs/swagger';
 const prisma = new PrismaClient();
 
-@Controller()
+@ApiTags('App')
+@Controller('app')
 export class AppController {
   private readonly logger = new Logger(AppController.name);
   constructor(private readonly appService: AppService) { }

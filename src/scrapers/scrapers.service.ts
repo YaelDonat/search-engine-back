@@ -125,6 +125,19 @@ export class ScrapersService {
     for (let i = 350; i < 361; i++) {
       await this.createBooks(i);
     }
-    console.log('books added successfully!');
+    this.logger.info('Livres ajoutés avec succès !');
   }
+
+  async addAndIndexBook(start : number, end : number) {
+    for (let i = start; i < end; i++) {
+      const result = await this.createBooks(i);
+      if(result === null){
+          console.log("book already exists")
+          continue;
+      }
+      await this.scrapeandIndexBook(i);
+  }
+  
+  console.log("books added and indexed successfully")
+}
 }

@@ -35,8 +35,4 @@ call npx prisma generate
 call npx prisma migrate dev
 cd ..\..
 
-REM Remplir la base de données
-echo Lancement du script de remplissage de la base de données...
-call node scrapers\script.js
-
 echo Initialisation terminée.
