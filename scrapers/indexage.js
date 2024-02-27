@@ -16,19 +16,20 @@ async function scrapeAndIndexBook(bookid) {
   }
 }
 
-async function scrapeTextContent(id) { 
+async function scrapeTextContent(id) {
   try {
     const response = await axios.get(`https://www.gutenberg.org/cache/epub/${id}/pg${id}.txt`);
     const content = response.data;
 
-    const startIndex = content.indexOf("*** START OF THE PROJECT GUTENBERG EBOOK") + "*** START OF THE PROJECT GUTENBERG EBOOK".length;
-    const titleEndIndex = content.indexOf("***", startIndex) + 3; 
-    const bookStartIndex = content.indexOf("\n", titleEndIndex) + 1; 
+    const startIndex =
+      content.indexOf('*** START OF THE PROJECT GUTENBERG EBOOK') + '*** START OF THE PROJECT GUTENBERG EBOOK'.length;
+    const titleEndIndex = content.indexOf('***', startIndex) + 3;
+    const bookStartIndex = content.indexOf('\n', titleEndIndex) + 1;
     const bookContent = content.substring(bookStartIndex);
-    
+
     return bookContent;
   } catch (error) {
-    console.error("Erreur lors du téléchargement ou du traitement du texte :", error);
+    console.error('Erreur lors du téléchargement ou du traitement du texte :', error);
   }
 }
 
@@ -44,7 +45,7 @@ function tokenizeAndIndex(text) {
 async function saveIndexToDatabaseBatch(index, bookid) {
   const livreId = await findLivreIdByBookid(bookid);
   if (!livreId) {
-    console.error("Livre non trouvé pour bookid:", bookid);
+    console.error('Livre non trouvé pour bookid:', bookid);
     return;
   }
 
@@ -54,13 +55,11 @@ async function saveIndexToDatabaseBatch(index, bookid) {
     livreId,
   }));
 
-
   await prisma.mot.createMany({
     data,
     skipDuplicates: true,
   });
 }
-
 
 async function findLivreIdByBookid(bookid) {
   const livre = await prisma.livre.findUnique({
@@ -70,6 +69,5 @@ async function findLivreIdByBookid(bookid) {
   });
   return livre ? livre.id : null;
 }
-
 
 module.exports = scrapeAndIndexBook;

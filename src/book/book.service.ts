@@ -9,7 +9,7 @@ export class BookService {
   constructor(
     private prisma: PrismaService,
     private readonly logger: PinoLogger
-  ) { }
+  ) {}
 
   async create(createBookDto: CreateBookDto) {
     try {
@@ -79,6 +79,15 @@ export class BookService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} book`;
+    return this.prisma.livre.delete({ where: { id } });
+  }
+
+  async findBookId(bookId: number) {
+    const book = await this.prisma.livre.findUnique({
+      where: {
+        bookid: bookId.toString()
+      }
+    });
+    return book ? book.id : null;
   }
 }

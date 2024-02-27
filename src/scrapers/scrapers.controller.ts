@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ScrapersService } from './scrapers.service';
 
 @Controller('scrapers')
 export class ScrapersController {
-  constructor(private readonly scrapersService: ScrapersService) { }
+  constructor(private readonly scrapersService: ScrapersService) {}
 
+  @Get('seedBooks')
+  async seedBooks(): Promise<void> {
+    this.scrapersService.seedBooks();
+  }
 }
