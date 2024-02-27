@@ -33,7 +33,7 @@ export class ScrapersService {
       });
 
       if (existingBook) {
-        console.log(`Le livre ${bookData.title} existe déjà dans la base de données.`);
+        this.logger.info(`Le livre ${bookData.title} existe déjà dans la base de données.`);
         return null;
       }
 
@@ -48,9 +48,9 @@ export class ScrapersService {
         data: createBookDto
       });
 
-      console.log(`Livre ${bookData.title} ajouté avec succès !`);
+      this.logger.info(`Livre ${bookData.title} ajouté avec succès !`);
     } catch (error) {
-      console.error("Erreur lors de l'ajout du livre :", error);
+      this.logger.error("Erreur lors de l'ajout du livre :", error);
     }
   }
 
@@ -128,16 +128,16 @@ export class ScrapersService {
     this.logger.info('Livres ajoutés avec succès !');
   }
 
-  async addAndIndexBook(start : number, end : number) {
+  async addAndIndexBook(start: number, end: number) {
     for (let i = start; i < end; i++) {
       const result = await this.createBooks(i);
-      if(result === null){
-          console.log("book already exists")
-          continue;
+      if (result === null) {
+        this.logger.info('book already exists');
+        continue;
       }
       await this.scrapeandIndexBook(i);
+    }
+
+    this.logger.info('books added and indexed successfully');
   }
-  
-  console.log("books added and indexed successfully")
-}
 }

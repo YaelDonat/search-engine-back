@@ -47,6 +47,19 @@ if (!fs.existsSync(logDirectory)) {
           sync: false
         }),
 
+        serializers: {
+          res: res => {
+            return { statusCode: res.statusCode };
+          },
+          req: req => {
+            return {
+              method: req.method,
+              url: req.url,
+              remoteAddress: req.remoteAddress
+            };
+          }
+        },
+
         transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined
       }
     }),
@@ -58,4 +71,4 @@ if (!fs.existsSync(logDirectory)) {
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule { }
+export class AppModule {}
