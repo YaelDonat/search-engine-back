@@ -7,7 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('word')
 @Controller('word')
 export class WordController {
-  constructor(private readonly wordService: WordService) {}
+  constructor(private readonly wordService: WordService) { }
 
   @Post()
   create(@Body() createWordDto: CreateWordDto) {
@@ -43,7 +43,7 @@ export class WordController {
   }
 
   @Post('search-advanced')
-  async searchAdvanced(@Body() body: any): Promise<any> {
+  async searchAdvanced(@Body() body: { regex: string }): Promise<any> {
     const { regex } = body;
     const regExp = new RegExp(regex, 'i');
 
@@ -59,7 +59,9 @@ export class WordController {
           matchingBooks.push({
             title: book.livre.title,
             occurrences: book.nbOccurrences,
-            mot: word.mot
+            mot: word.mot,
+            imgUrl: book.livre.imgUrl,
+            author: book.livre.author
           });
         }
       });
